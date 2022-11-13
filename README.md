@@ -13,31 +13,39 @@ Melanoma is a deadly disease, but if caught early, most melanomas can be cured w
 
 ## Dataset Description
 
-The images are provided in DICOM format. This can be accessed using commonly-available libraries like pydicom, and contains both image and metadata. It is a commonly used medical imaging data format.
+### What files do I need? 
+You will need the training and test images, as well as train.csv and test.csv. The images are grouped in directories by study and series. They are in DICOM format, and contain additional metadata that may be relevant to the competition. Each image has a unique identifier - ``` SOPInstanceUID.```
 
-Images are also provided in JPEG and TFRecord format (in the jpeg and tfrecords directories, respectively). Images in TFRecord format have been resized to a uniform 1024x1024.
+The location for each image is given by: ``` <StudyInstanceUID>/<SeriesInstanceUID>/<SOPInstanceUID>.dcm. ```
 
-Metadata is also provided outside of the DICOM format, in CSV files. See the Columns section for a description.
-
-## What am I predicting?
-
-You are predicting a binary target for each image. Your model should predict the probability (floating point) between 0.0 and 1.0 that the lesion in the image is malignant (the target). In the training data, train.csv, the value 0 denotes benign, and 1 indicates malignant.
+The data provided by the host for this competition and made available below is the RSNA-STR PE CT (RSPECT) dataset. Use of the dataset for non-commercial and/or academic purposes is permitted with citation.
+### What should I expect the data format to be?
+train.csv contains the three UIDs noted above, and a number of labels. Some are targets which require predictions, and some are informational, which will also be noted below in Data fields.
+test.csv contains only the three UIDs.
 
 ### Files
 
-- <b> train.csv </b> => the training set
-- <b> test.csv </b> => the test set
+- <b> train.csv </b> => contains UIDs and all labels.
+- <b> test.csv </b> => contains UIDs.
 
-### Columns 
-- image_name - unique identifier, points to filename of related DICOM image
-- patient_id - unique patient identifier
-- sex - the sex of the patient (when unknown, will be blank)
-- age_approx - approximate patient age at time of imaging
-- anatom_site_general_challenge - location of imaged site
-- diagnosis - detailed diagnosis information (train only)
-- benign_malignant - indicator of malignancy of imaged lesion
-- target - binarized version of the target variable
-
+### Data Fields 
+- StudyInstanceUID - unique ID for each study (exam) in the data.
+- SeriesInstanceUID - unique ID for each series within the study.
+- SOPInstanceUID - unique ID for each image within the study (and data).
+- pe_present_on_image - image-level, notes whether any form of PE is present on the image.
+- negative_exam_for_pe - exam-level, whether there are any images in the study that have PE present.
+- qa_motion - informational, indicates whether radiologists noted an issue with motion in the study.
+- qa_contrast - informational, indicates whether radiologists noted an issue with contrast in the study.
+- flow_artifact - informational
+- rv_lv_ratio_gte_1 - exam-level, indicates whether the RV/LV ratio present in the study is >= 1
+- rv_lv_ratio_lt_1 - exam-level, indicates whether the RV/LV ratio present in the study is < 1
+- leftsided_pe - exam-level, indicates that there is PE present on the left side of the images in the study
+- chronic_pe - exam-level, indicates that the PE in the study is chronic
+- true_filling_defect_not_pe - informational, indicates a defect that is NOT PE
+- rightsided_pe - exam-level, indicates that there is PE present on the right side of the images in the study
+- acute_and_chronic_pe - exam-level, indicates that the PE present in the study is both acute AND chronic
+- central_pe - exam-level, indicates that there is PE present in the center of the images in the study
+- indeterminate -exam-level, indicates that while the study is not negative for PE, an ultimate set of exam-level labels could not be created, due to QA issues
 
 
 
